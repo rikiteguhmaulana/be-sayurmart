@@ -22,8 +22,22 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Izinkan semua origin untuk development agar request tidak terblokir
-      callback(null, true);
+      const allowedOrigins = [
+        "https://fe-sayurmart.vercel.app",
+        "https://fe-sayurmart-kqva.vercel.app", // Jaga-jaga kalau user pakai link lama/alternatif
+        "http://localhost:3000",
+      ];
+      
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        // Sementara kita allow semua untuk debug jika masih gagal, nanti bisa diperketat
+        // callback(new Error('Not allowed by CORS')); 
+        callback(null, true); 
+      }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
