@@ -1,6 +1,6 @@
-# 🥬 SayurSegar Backend
+# 🥬 SayurMart Backend
 
-Backend service untuk aplikasi **SayurSegar** — platform e-commerce sayur dan buah segar langsung dari petani.  
+Backend service untuk aplikasi **SayurMart** — platform e-commerce sayur dan buah segar langsung dari petani.  
 Dibangun dengan **Express.js + TypeScript**, menggunakan **Prisma ORM** untuk manajemen database.
 
 ---
@@ -44,7 +44,7 @@ be-sayur-segar/
 ### 1. Clone Repository
 
 ```bash
-  git clone https://github.com/fahrurrzl/be-sayur-segar.git
+  git clone https://github.com/rikiteguhmaulana/be-sayurmart.git
   cd be-sayur-segar
 ```
 
