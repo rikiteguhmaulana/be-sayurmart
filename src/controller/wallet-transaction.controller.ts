@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { IReqUser } from "../types/auth";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/db";
 import { WalletTransactionStatus, WalletTransactionType } from "@prisma/client";
 
 export default {

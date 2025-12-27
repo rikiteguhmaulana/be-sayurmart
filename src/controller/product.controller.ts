@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/db";
 import { productSchema } from "../schema/product.schema";
 import { IReqUser } from "../types/auth";
 import { TProduct } from "../types/product";

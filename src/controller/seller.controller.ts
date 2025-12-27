@@ -2,7 +2,7 @@ import { Response } from "express";
 import { IReqUser } from "../types/auth";
 import { TSeller } from "../types/seller";
 import { z } from "zod";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/db";
 import { sellerSchema } from "../schema/seller.schema";
 
 export default {

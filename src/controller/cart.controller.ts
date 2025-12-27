@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { IReqUser } from "../types/auth";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/db";
 
 export default {
   create: async (req: IReqUser, res: Response) => {

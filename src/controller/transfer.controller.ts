@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { Payout } from "../utils/xendit";
 import { IReqUser } from "../types/auth";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/db";
 import { WalletTransactionStatus } from "@prisma/client";
 
 export default {
