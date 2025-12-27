@@ -68,7 +68,7 @@ export default {
           password: hashedPassword,
           address: validated.address,
           activationCode,
-          isActive: true, // Auto-aktifkan untuk mempermudah development
+          isActive: false,
         },
       });
       console.log("User created successfully with ID:", user.id);
@@ -128,21 +128,21 @@ export default {
       console.log("Searching for user in database...");
       const userExists = await prisma.user.findFirst({
         where: {
-          AND: [
-            {
-              email: validated.email,
-            },
-            {
-              isActive: true,
-            },
-          ],
+          email: validated.email,
         },
       });
 
       if (!userExists) {
-        console.log("User not found or not active:", email);
+        console.log("User not found:", email);
         return res.status(400).json({
           message: "User not match in our record",
+        });
+      }
+
+      if (!userExists.isActive) {
+        console.log("User not active:", email);
+        return res.status(400).json({
+          message: "Silahkan aktivasi akun anda terlebih dahulu",
         });
       }
 
