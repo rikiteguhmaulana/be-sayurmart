@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
+
+enum RoleUser {
+  user
+  admin
+  superadmin
+}
+
+enum Gender {
+  male
+  female
+}
+
+model User {
+  id             String     @id @default(uuid())
+  name           String     @db.VarChar(255)
+  username       String     @unique
+  gender         Gender?
+  birthDate      DateTime?  @map("birth_date")
+  photo          String?
+  email          String     @unique
+  phone          String     @db.VarChar(15)
+  password       String
+  role           RoleUser   @default(user)
+  address        String
+  isActive       Boolean    @default(false) @map("is_active")
+  activationCode String     @unique @map("activation_code")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  Category       Category[]
+  Seller         Seller[]
+  Cart           Cart[]
+  Order          Order[]
+}
+
+model Seller {
+  id            String    @id @default(uuid())
+  userId        String    @map("user_id")
+  storeName     String    @map("store_name") @db.VarChar(255)
+  storeLocation String    @map("store_location") @db.VarChar(255)
+  storePhoto    String?   @map("store_photo")
+  verified      Boolean   @default(false)
+  description   String    @db.Text
+  bankName      String    @map("bank_name")
+  accountName   String    @map("account_name")
+  accountNumber String    @map("account_number")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  products      Product[]
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Order         Order[]
+  wallet        Wallet?
+}
+
+model Wallet {
+  id           String              @id @default(uuid())
+  sellerId     String              @unique
+  balance      Float               @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  seller       Seller              @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+}
+
+enum WalletTransactionStatus {
+  pending
+  success
+  failed
+}
+
+enum WalletTransactionType {
+  income
+  outcome
+}
+
+model WalletTransaction {
+  id            String                  @id @default(uuid())
+  walletId      String
+  amount        Float
+  type          WalletTransactionType
+  status        WalletTransactionStatus
+  paymentMethod String
+  orderId       String?                 @map("order_id")
+  createdAt     DateTime                @default(now())
+  wallet        Wallet                  @relation(fields: [walletId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  imageUrl  String
+  createdBy String    @map("created_by")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  products  Product[]
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  sellerId    String?     @map("seller_id")
+  name        String      @db.VarChar(255)
+  description String      @db.Text
+  price       Float
+  stock       Int
+  imageUrl    String
+  categoryId  String      @map("category_id")
+  unitId      String      @map("unit_id")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  seller      Seller?     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  cartItems   CartItem[]
+  OrderItem   OrderItem[]
+  Unit        Unit        @relation(fields: [unitId], references: [id])
+}
+
+model Unit {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(255)
+  symbol    String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @map("user_id")
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String   @map("cart_id")
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  PROCESSING
+  DELIVERED
+  COMPLETED
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  orderId        String      @unique @map("order_id")
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sellerId       String      @map("seller_id")
+  seller         Seller      @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  totalPrice     Float
+  shippingFee    Float
+  status         OrderStatus @default(PENDING)
+  address        String
+  invoiceId      String?     @map("invoice_id")
+  paymentUrl     String?     @map("payment_url")
+  payment_method String?     @map("payment_method")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String   @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
