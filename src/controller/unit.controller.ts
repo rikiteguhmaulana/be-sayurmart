@@ -2,7 +2,7 @@ import { Response } from "express";
 import { IReqUser } from "../types/auth";
 import { TUnit } from "../types/unit";
 import { unitSchema } from "../schema/unit.schema";
-import { prisma } from "../../prisma/prisma";
+import { prisma } from "../utils/prisma";
 import { z } from "zod";
 
 export default {

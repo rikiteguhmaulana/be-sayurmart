@@ -2,7 +2,7 @@ import { z } from "zod";
 import { IReqUser } from "../types/auth";
 import { Response } from "express";
 import { checkoutSchema } from "../schema/order.schema";
-import { prisma } from "../../prisma/prisma";
+import { prisma } from "../utils/prisma";
 import { TOrder, OrderWithItems } from "../types/order";
 import { Invoice } from "../utils/xendit";
 import { generateOrderId } from "../utils/randomString";

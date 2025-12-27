@@ -2,7 +2,7 @@ import { Response } from "express";
 import { IReqUser } from "../types/auth";
 import { TCategory } from "../types/category";
 import { categorySchema } from "../schema/category.schema";
-import { prisma } from "../../prisma/prisma";
+import { prisma } from "../utils/prisma";
 
 export default {
   async create(req: IReqUser, res: Response) {
