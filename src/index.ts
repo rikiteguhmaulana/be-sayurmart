@@ -37,9 +37,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = 5000;
 
-router.get("/", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({
-    message: "Welcome to the API",
+    message: "Welcome to SayurMart API",
+    status: "OK",
+    timestamp: new Date().toISOString()
   });
 });
 
