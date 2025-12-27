@@ -1,5 +1,6 @@
 import express from "express";
 import router from "./routes/api";
+import { prisma } from "./utils/db";
 import bodyParser from "body-parser";
 import cors from "cors";
 import env from "./utils/env";
@@ -57,6 +58,33 @@ app.get("/", (req, res) => {
     status: "OK",
     timestamp: new Date().toISOString()
   });
+});
+
+app.get("/debug-db", async (req, res) => {
+  try {
+    console.log("Attempting DB connection...");
+    // Coba query sederhana
+    const userCount = await prisma.user.count();
+    res.json({
+      status: "Connected!",
+      userCount,
+      databaseUrlLength: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
+      envCheck: {
+        hasDbUrl: !!process.env.DATABASE_URL,
+        hasDirectUrl: !!process.env.DIRECT_URL,
+      }
+    });
+  } catch (error: any) {
+    console.error("DB Connection Failed:", error);
+    res.status(500).json({
+      status: "Failed",
+      errorName: error.name,
+      errorMessage: error.message,
+      errorCode: error.code,
+      meta: error.meta,
+      stack: error.stack
+    });
+  }
 });
 
 app.use("/api", router);
